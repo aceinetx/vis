@@ -22,7 +22,7 @@
       rec {
         packages.lpeg-pc = stdenv.mkDerivation {
           pname = "lpeg-pc";
-          version = "0.1.0";
+          version = luaPackages.lpeg.version;
 
           dontUnpack = true;
           dontConfigure = true;
