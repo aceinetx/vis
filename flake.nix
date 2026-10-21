@@ -20,28 +20,47 @@
       in
       with pkgs;
       rec {
-        packages.lpeg-pc = stdenv.mkDerivation {
-          pname = "lpeg-pc";
-          version = luaPackages.lpeg.version;
+        packages = rec {
+          lpeg-pc = stdenv.mkDerivation {
+            pname = "lpeg-pc";
+            version = luaPackages.lpeg.version;
 
-          dontUnpack = true;
-          dontConfigure = true;
-          dontBuild = true;
+            dontUnpack = true;
+            dontConfigure = true;
+            dontBuild = true;
 
-          propagatedBuildInputs = [ luaPackages.lpeg ];
+            propagatedBuildInputs = [ luaPackages.lpeg ];
 
-          installPhase = ''
-            mkdir -p "$out/lib/pkgconfig"
+            installPhase = ''
+              mkdir -p "$out/lib/pkgconfig"
 
-            lib_path=$(dirname $(find ${luaPackages.lpeg}/lib/lua -name "lpeg.so"))
+              lib_path=$(dirname $(find ${luaPackages.lpeg}/lib/lua -name "lpeg.so"))
 
-            cat > "$out/lib/pkgconfig/lpeg.pc" <<EOF
-            Name: lpeg
-            Description: lpeg
-            Version: ${luaPackages.lpeg.version}
-            Libs: -L$lib_path -l:lpeg.so -Wl,--rpath $lib_path
-            EOF
-          '';
+              cat > "$out/lib/pkgconfig/lpeg.pc" <<EOF
+              Name: lpeg
+              Description: lpeg
+              Version: ${luaPackages.lpeg.version}
+              Libs: -L$lib_path -l:lpeg.so -Wl,--rpath $lib_path
+              EOF
+            '';
+          };
+
+          vis = stdenv.mkDerivation {
+            pname = "vis";
+            version = "0.9";
+
+            src = self;
+
+            buildInputs = [
+              stdenv.cc.cc
+              ncurses
+              luaPackages.lua
+              pkg-config
+              lpeg-pc
+            ];
+          };
+
+          default = vis;
         };
 
         devShells.default = mkShell {
