@@ -57,6 +57,9 @@
               luaPackages.lua
               pkg-config
               lpeg-pc
+              tre
+              acl
+              libselinux
             ];
           };
 
@@ -70,6 +73,9 @@
             luaPackages.lua
             pkg-config
             packages.lpeg-pc
+            tre
+            acl
+            libselinux
           ];
         };
       }
